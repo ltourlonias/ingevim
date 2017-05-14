@@ -1,0 +1,12 @@
+# Purpose
+This vim plugin is designed to automatically choose between the gnuarm-C compiler and the Ingedev compiler based on the location of the source code
+
+# Task on opening buffer
+1. Detect the compiler by looking for the path
+2. Create environment variable in the buffer scope (root path, compiler command line, quickfix errorformat, ...)
+3. Create mapping key to build the project
+
+# Enhancement idea
+* Break makefile to compile a simple C project without compiling the whole system
+* Verify that the SDK is build before building an IngeDev project
+* Automatically add the current SDK version to the IngeDev project

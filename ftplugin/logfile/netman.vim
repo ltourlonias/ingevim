@@ -34,9 +34,10 @@ function! s:LoadHighlights()
 endfunction
 
 function! NMFolding()
-    %s/ +\([a-zA-Z]\)/ {{{\1/
-    %s/ -\([a-zA-Z]\)/ }}}\1/
+    silent! %s/ +\([a-zA-Z]\)/ {{{\1/
+    silent! %s/ -\([a-zA-Z]\)/ }}}\1/
 endfunction
+nnoremap ,f :call NMFolding()<cr>
 
 function! NMSetHighlight()
     echom "NMSetHighlight"

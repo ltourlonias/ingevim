@@ -36,8 +36,8 @@ endfunction
 
 function! NMSetFolding()
     echom "NMSetFolding"
-    %s/+\([a-zA-Z]\)/{{{\1/
-    %s/-\([a-zA-Z]\)/}}}\1/
+    %s/ +\([a-zA-Z]\)/ {{{\1/
+    %s/ -\([a-zA-Z]\)/ }}}\1/
 endfunction
 
 function! NMSetHighlight()
@@ -46,16 +46,18 @@ function! NMSetHighlight()
     call s:LoadHighlights()
     " create match
     for item in s:highlight_list
-        let id = matchadd('NM'.item[0],item[3],-1)
+        let id = matchadd('NM'.item[0],"\\v.*".item[3].".*$",-1)
         echom "adding item ".join([item[3],id]," ")
-        let s:activated_hl = {item[3]:id}
+        let s:activated_hl[item[3]] = id
     endfor
 endfunction
 
 function! NMUnsetHighlight()
     echom "NMUnsetHighlight"
     " delete every highlight of the list
+    echo items(s:activated_hl)
     for item in items(s:activated_hl)
+        echo "matchdelete(".join([item[1]],")")
         call matchdelete(item[1])
         unlet s:activated_hl[item[0]]
     endfor

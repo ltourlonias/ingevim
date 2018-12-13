@@ -7,10 +7,9 @@ if exists("loaded_netman")
 endif
 
 let loaded_netman = 1
-let s:highlight_list = []
-let s:activated_hl = {}
 let s:loaded_data = 0
 let s:data_file = expand('<sfile>:p:r').'.conf'
+let s:highlight_list = []
 
 function! s:LoadHighlights()
     if !s:loaded_data
@@ -34,32 +33,42 @@ function! s:LoadHighlights()
     endif
 endfunction
 
-function! NMSetFolding()
-    echom "NMSetFolding"
+function! NMFolding()
     %s/ +\([a-zA-Z]\)/ {{{\1/
     %s/ -\([a-zA-Z]\)/ }}}\1/
 endfunction
 
 function! NMSetHighlight()
     echom "NMSetHighlight"
+    if(!exists('b:activated_hl'))
+        let b:activated_hl = {}
+    endif
     " Create highlight group
     call s:LoadHighlights()
     " create match
     for item in s:highlight_list
         let id = matchadd('NM'.item[0],"\\v.*".item[3].".*$",-1)
-        echom "adding item ".join([item[3],id]," ")
-        let s:activated_hl[item[3]] = id
+        let b:activated_hl[item[3]] = id
     endfor
 endfunction
 
 function! NMUnsetHighlight()
     echom "NMUnsetHighlight"
+    if(!exists('b:activated_hl'))
+        let b:activated_hl = {}
+    endif
     " delete every highlight of the list
-    echo items(s:activated_hl)
-    for item in items(s:activated_hl)
-        echo "matchdelete(".join([item[1]],")")
+    for item in items(b:activated_hl)
         call matchdelete(item[1])
-        unlet s:activated_hl[item[0]]
+        unlet b:activated_hl[item[0]]
     endfor
-    let b:highlight_list = []
 endfunction
+
+function! NMToggleHighlight()
+    if (!exists('b:activated_hl') || (len(b:activated_hl) == 0)) 
+        call NMSetHighlight()
+    else
+        call NMUnsetHighlight()
+    endif
+endfunction
+nnoremap ,hl :call NMToggleHighlight()<cr>
